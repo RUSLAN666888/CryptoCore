@@ -1,6 +1,6 @@
 // src/modes/ecb.h
-#ifndef CRYPTOCORE_MODES_ECB_HPP
-#define CRYPTOCORE_MODES_ECB_HPP
+#ifndef CRYPTOCORE_MODES_ECB_H
+#define CRYPTOCORE_MODES_ECB_H
 
 #include "aes128.h"
 

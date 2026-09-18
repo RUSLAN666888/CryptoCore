@@ -3,8 +3,6 @@
 
 #include "aes128.h"
 
-#include <stdexcept>
-
 namespace cryptocore::modes::padding {
 
 namespace {

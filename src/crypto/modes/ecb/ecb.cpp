@@ -46,8 +46,7 @@ std::vector<std::uint8_t> encrypt(const std::vector<std::uint8_t>& data, const a
     return ciphertext;
 }
 
-std::vector<std::uint8_t> decrypt(const std::vector<std::uint8_t>& data,
-                                  const aes128::Key& key) {
+std::vector<std::uint8_t> decrypt(const std::vector<std::uint8_t>& data, const aes128::Key& key) {
     if (data.empty()) {
         throw std::runtime_error("ecb: empty ciphertext");
     }

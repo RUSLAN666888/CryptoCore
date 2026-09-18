@@ -1,6 +1,6 @@
-// src/modes/padding.hpp
-#ifndef CRYPTOCORE_MODES_PADDING_HPP
-#define CRYPTOCORE_MODES_PADDING_HPP
+// src/modes/padding.h
+#ifndef CRYPTOCORE_MODES_PADDING_H
+#define CRYPTOCORE_MODES_PADDING_H
 
 #include <cstdint>
 #include <vector>

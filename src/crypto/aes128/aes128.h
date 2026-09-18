@@ -1,6 +1,6 @@
 // src/aes128/aes128.h
-#ifndef CRYPTOCORE_AES128_AES128_HPP
-#define CRYPTOCORE_AES128_AES128_HPP
+#ifndef CRYPTOCORE_AES128_AES128_H
+#define CRYPTOCORE_AES128_AES128_H
 
 #include <array>
 #include <cstdint>
