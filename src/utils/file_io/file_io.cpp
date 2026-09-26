@@ -11,6 +11,10 @@ FileReader::FileReader(const std::string& path) : file_(path, std::ios::binary){
 }
 
 std::size_t FileReader::read(std::uint8_t* buffer, std::size_t max_bytes) {
+    if (max_bytes == 0) {
+        return 0;
+    }
+
     file_.read(reinterpret_cast<char*>(buffer), static_cast<std::streamsize>(max_bytes));
 
     const std::streamsize got = file_.gcount();
@@ -20,6 +24,42 @@ std::size_t FileReader::read(std::uint8_t* buffer, std::size_t max_bytes) {
     }
 
     return static_cast<std::size_t>(got);
+}
+
+void FileReader::seek(std::size_t offset) {
+    file_.clear();
+    file_.seekg(static_cast<std::streamoff>(offset), std::ios::beg);
+    if (!file_) {
+        throw FileError("seek failed");
+    }
+}
+
+std::size_t FileReader::tell() {
+    const auto pos = file_.tellg();
+    if (pos == std::streampos(-1)) {
+        throw FileError("tell failed");
+    }
+    return static_cast<std::size_t>(pos);
+}
+
+std::size_t FileReader::size() {
+    const auto current = file_.tellg();
+
+    file_.clear();
+    file_.seekg(0, std::ios::end);
+    const auto end = file_.tellg();
+
+    file_.clear();
+    file_.seekg(current);
+
+    if (end == std::streampos(-1) || current == std::streampos(-1)) {
+        throw FileError("size failed");
+    }
+    return static_cast<std::size_t>(end - current);
+}
+
+bool FileReader::eof() {
+    return file_.eof();
 }
 
 FileWriter::FileWriter(const std::string& path) : file_(path, std::ios::binary | std::ios::trunc){

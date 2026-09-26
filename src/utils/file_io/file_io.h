@@ -42,6 +42,39 @@ public:
      */
     std::size_t read(std::uint8_t* buffer, std::size_t max_bytes);
 
+    /**
+     * @brief Move the read position to an absolute offset from the start.
+     *
+     * Clears any end-of-file or fail state left by previous reads.
+     *
+     * @param offset Byte offset from the beginning of the file.
+     * @throws FileError If the seek fails.
+     */
+    void seek(std::size_t offset);
+
+    /**
+     * @brief Return the current read position in bytes from the start.
+     *
+     * @throws FileError If the position cannot be determined.
+     */
+    std::size_t tell();
+
+    /**
+     * @brief Return the number of bytes remaining from the current position.
+     *
+     * After read() advances the position, size() reflects only the
+     * unread tail. At the start of a freshly opened file, this equals
+     * the total file size.
+     *
+     * @throws FileError If the size cannot be determined.
+     */
+    std::size_t size();
+
+    /**
+     * @brief Return true if the last read reached end of file.
+     */
+    bool eof();
+
 private:
     std::ifstream file_;
 };
