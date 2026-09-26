@@ -16,6 +16,11 @@ add_executable(cryptocore_tests
     test_aes128.cpp
     test_padding.cpp
     test_ecb.cpp
+    test_csprng.cpp
+    test_cbc.cpp
+    test_cfb.cpp
+    test_ofb.cpp
+    test_ctr.cpp
 )
 
 target_link_libraries(cryptocore_tests PRIVATE

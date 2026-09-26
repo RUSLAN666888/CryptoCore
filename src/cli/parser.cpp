@@ -66,6 +66,30 @@ void reject_duplicate(bool already_set, const char* flag) {
     }
 }
 
+/**
+ * @brief Parse a 16-byte IV from a 32-character hex string.
+ *
+ * @throws ParseError If the string is not valid hex or not 16 bytes long.
+ */
+aes128::Block parse_iv(const std::string& hex) {
+    std::vector<std::uint8_t> bytes;
+    try {
+        bytes = hex_to_bytes(hex);
+    } catch (const std::exception& e) {
+        throw ParseError(std::string("--iv is not valid hex: ") + e.what());
+    }
+
+    if (bytes.size() != aes128::BLOCK_SIZE) {
+        throw ParseError(
+            "--iv must be exactly 32 hex characters ("
+            + std::to_string(bytes.size() * 2) + " given)");
+    }
+
+    aes128::Block iv{};
+    std::copy(bytes.begin(), bytes.end(), iv.begin());
+    return iv;
+}
+
 } // namespace
 
 Args parse(int argc, char* argv[]) {
@@ -77,6 +101,7 @@ Args parse(int argc, char* argv[]) {
     bool algorithm_set = false;
     bool mode_set = false;
     bool key_set = false;
+    bool iv_set = false;
     bool input_set = false;
     bool output_set = false;
     bool encrypt_set = false;
@@ -97,10 +122,16 @@ Args parse(int argc, char* argv[]) {
         } else if (flag == "--mode") {
             reject_duplicate(mode_set, "--mode");
             const std::string value = take_value(argv, argc, i, "--mode");
-            if (value != "ecb") {
-                throw ParseError("--mode must be 'ecb' (got '" + value + "')");
+            if (value == "ecb")      args.mode = Mode::ECB;
+            else if (value == "cbc") args.mode = Mode::CBC;
+            else if (value == "cfb") args.mode = Mode::CFB;
+            else if (value == "ofb") args.mode = Mode::OFB;
+            else if (value == "ctr") args.mode = Mode::CTR;
+            else {
+                throw ParseError(
+                    "--mode must be one of: ecb, cbc, cfb, ofb, ctr (got '"
+                    + value + "')");
             }
-            args.mode = Mode::ECB;
             mode_set = true;
 
         } else if (flag == "--encrypt") {
@@ -118,6 +149,12 @@ Args parse(int argc, char* argv[]) {
             const std::string value = take_value(argv, argc, i, "--key");
             args.key = parse_key(value);
             key_set = true;
+
+        } else if (flag == "--iv") {
+            reject_duplicate(iv_set, "--iv");
+            const std::string value = take_value(argv, argc, i, "--iv");
+            args.iv = parse_iv(value);
+            iv_set = true;
 
         } else if (flag == "--input") {
             reject_duplicate(input_set, "--input");
@@ -162,6 +199,14 @@ Args parse(int argc, char* argv[]) {
     }
     if (!encrypt_set && !decrypt_set) {
         throw ParseError("one of --encrypt or --decrypt is required");
+    }
+
+    // ---- IV rules ----
+    if (iv_set && encrypt_set) {
+        throw ParseError("--iv is not allowed when encrypting");
+    }
+    if (iv_set && args.mode == Mode::ECB) {
+        throw ParseError("--iv is not used in ECB mode");
     }
 
     return args;

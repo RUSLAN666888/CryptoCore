@@ -30,6 +30,10 @@ enum class Algorithm {
  */
 enum class Mode {
     ECB,
+    CBC,
+    CFB,
+    OFB,
+    CTR,
 };
 
 /**
@@ -51,6 +55,7 @@ struct Args {
     Mode mode = Mode::ECB;
     Operation operation = Operation::Encrypt;  // overwritten by parser
     aes128::Key key{};
+    std::optional<aes128::Block> iv;
     std::string input;
     std::optional<std::string> output;
 };

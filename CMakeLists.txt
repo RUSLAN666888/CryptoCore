@@ -13,6 +13,11 @@ add_library(cryptocore_lib STATIC
     src/crypto/aes128/aes128.cpp
     src/crypto/modes/padding/padding.cpp
     src/crypto/modes/ecb/ecb.cpp
+    src/crypto/modes/cbc/cbc.cpp
+    src/crypto/modes/cfb/cfb.cpp
+    src/crypto/modes/ofb/ofb.cpp
+    src/crypto/modes/ctr/ctr.cpp
+    src/crypto/csprng/csprng.cpp
     src/utils/hex/hex.cpp
     src/utils/file_io/file_io.cpp
 )
@@ -20,7 +25,12 @@ add_library(cryptocore_lib STATIC
 target_include_directories(cryptocore_lib PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/aes128
     ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/modes/ecb
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/modes/cbc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/modes/cfb
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/modes/ofb
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/modes/ctr
     ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/modes/padding
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto/csprng
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/hex
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/file_io
 )
@@ -33,6 +43,7 @@ target_link_libraries(cryptocore_lib PUBLIC
 add_executable(CryptoCore
     main.cpp
     src/cli/parser.cpp
+    src/cli/run.cpp
 )
 
 target_include_directories(CryptoCore PRIVATE
